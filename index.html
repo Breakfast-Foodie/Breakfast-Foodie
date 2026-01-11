@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ăn Sáng Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f7f7f7; }
+    header { background: #ff9800; color: white; padding: 20px; text-align: center; }
+    .container { max-width: 1000px; margin: auto; padding: 15px; }
+    .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+    .item { background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
+    .item img { width: 100%; height: 150px; object-fit: cover; }
+    .item .info { padding: 10px; }
+    .item h3 { margin: 5px 0; }
+    .item button { background: #ff9800; color: white; border: none; padding: 8px; width: 100%; border-radius: 5px; cursor: pointer; }
+    .cart { background: white; margin-top: 20px; padding: 15px; border-radius: 10px; }
+    input { width: 100%; padding: 8px; margin: 5px 0 10px; }
+    .checkout button { width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 5px; font-size: 16px; }
+    .pay-now { background: #4caf50; color: white; }
+    .pay-later { background: #2196f3; color: white; }
+  </style>
+</head>
+<body>
+
+<header style="background:#8d4b2d;">
+  <img src="https://via.placeholder.com/80" style="border-radius:50%;margin-bottom:10px" />
+  <h1>🍳 Ăn Sáng Cô Ba</h1>
+  <p>Bữa sáng nóng hổi – Giao tận nơi</p>
+</header>
+
+<div class="container">
+
+  <h2>📋 Thực đơn</h2>
+  <div class="menu">
+    <div class="item">
+      <img src="https://images.unsplash.com/photo-1604908177522-4326a3bbcd33" />
+      <div class="info">
+        <h3>Bánh mì trứng</h3>
+        <p>20.000đ</p>
+        <button onclick="addToCart('Bánh mì trứng', 20000)">Thêm</button>
+      </div>
+    </div>
+    <div class="item">
+      <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe" />
+      <div class="info">
+        <h3>Phở bò</h3>
+        <p>35.000đ</p>
+        <button onclick="addToCart('Phở bò', 35000)">Thêm</button>
+      </div>
+    </div>
+    <div class="item">
+      <img src="https://images.unsplash.com/photo-1626078295965-1cda4c58a3b7" />
+      <div class="info">
+        <h3>Xôi gà</h3>
+        <p>25.000đ</p>
+        <button onclick="addToCart('Xôi gà', 25000)">Thêm</button>
+      </div>
+    </div>
+    <div class="item">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93" />
+      <div class="info">
+        <h3>Cà phê sữa</h3>
+        <p>15.000đ</p>
+        <button onclick="addToCart('Cà phê sữa', 15000)">Thêm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart">
+    <h2>🛒 Giỏ hàng</h2>
+    <ul id="cart-items"></ul>
+    <p><strong>Tổng tiền:</strong> <span id="total">0</span> đ</p>
+
+    <h3>👤 Thông tin khách hàng</h3>
+    <input id="name" placeholder="Tên khách hàng" />
+    <input id="phone" placeholder="Số điện thoại" />
+    <input id="address" placeholder="Địa chỉ giao hàng" />
+    <input id="time" placeholder="Giờ giao mong muốn (VD: 7h30)" />
+
+    <div class="notice" style="background:#fff3cd;padding:10px;border-radius:8px;margin:10px 0;">
+      ⏰ <strong>Nhận đơn từ 6h – 9h sáng</strong><br>
+      🚚 Giao nhanh trong khu vực gần
+    </div>
+
+    <div class="checkout">
+      <img id="momoQR" src="https://via.placeholder.com/250?text=QR+MoMo" style="display:none;width:100%;margin-top:10px;border-radius:10px" />
+      <button class="pay-now" onclick="checkout('pay_now')">Thanh toán MoMo / Chuyển khoản</button>
+      <button class="pay-later" onclick="checkout('pay_later')">Thanh toán khi nhận hàng</button>
+    </div>
+  </div>
+
+  <div style="margin-top:15px;text-align:center;">
+    📞 <a href="tel:0901234567">Gọi nhanh</a> | 💬 <a href="https://zalo.me/84XXXXXXXXX" target="_blank">Chat Zalo</a>
+  </div>
+
+</div>
+
+<script>
+  const cart = {};
+  let total = 0;
+  const ZALO_PHONE = '84XXXXXXXXX'; // thay bằng số Zalo của bạn
+
+  function addToCart(name, price) {
+    if (!cart[name]) cart[name] = { qty: 0, price };
+    cart[name].qty++;
+    total += price;
+    renderCart();
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cart-items');
+    list.innerHTML = '';
+    for (const item in cart) {
+      const li = document.createElement('li');
+      li.textContent = `${item} x ${cart[item].qty}`;
+      list.appendChild(li);
+    }
+    document.getElementById('total').textContent = total;
+  }
+
+  function checkout(type) {
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const time = document.getElementById('time').value;
+
+    if (!name || !phone || !address || total === 0) {
+      alert('Vui lòng nhập đầy đủ thông tin và chọn món');
+      return;
+    }
+
+    if (type === 'pay_now') {
+      document.getElementById('momoQR').style.display = 'block';
+    }
+
+    let orderText = `ĐƠN HÀNG ĂN SÁNG
+${name} | ${phone}
+${address}
+Giờ giao: ${time || 'Sớm nhất'}
+`;
+    for (const item in cart) {
+      orderText += `${item} x ${cart[item].qty}
+`;
+    }
+    orderText += `Tổng: ${total}đ | ${type === 'pay_now' ? 'MoMo' : 'COD'}`;
+
+    fetch('https://script.google.com/macros/s/GOOGLE_SCRIPT_URL/exec', {
+      method: 'POST',
+      body: JSON.stringify({ order: orderText })
+    });
+
+    const zaloText = encodeURIComponent(orderText);
+    window.open(`https://zalo.me/${ZALO_PHONE}?text=${zaloText}`, '_blank');
+  }(`https://zalo.me/${ZALO_PHONE}?text=${order}`, '_blank');
+  }
+</script>
+
+</body>
+</html>
